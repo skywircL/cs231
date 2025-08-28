@@ -67,6 +67,8 @@ def sgd_momentum(w, dw, config=None):
     # TODO: Implement the momentum update formula. Store the updated value in #
     # the next_w variable. You should also use and update the velocity v.     #
     ###########################################################################
+    v = config["momentum"] * v - config["learning_rate"] * dw
+    next_w = w + v
 
     ###########################################################################
     #                             END OF YOUR CODE                            #
@@ -101,6 +103,8 @@ def rmsprop(w, dw, config=None):
     # in the next_w variable. Don't forget to update cache value stored in    #
     # config['cache'].                                                        #
     ###########################################################################
+    config["cache"]  = config.get("cache") * config["decay_rate"]  + (1.0 - config["decay_rate"]) *dw *dw
+    next_w = w - config["learning_rate"] * dw / np.sqrt(config["epsilon"] + config["cache"])
 
     ###########################################################################
     #                             END OF YOUR CODE                            #
@@ -142,6 +146,12 @@ def adam(w, dw, config=None):
     # NOTE: In order to match the reference output, please modify t _before_  #
     # using it in any calculations.                                           #
     ###########################################################################
+    config["t"] = config.get("t")  +1
+    config["m"] =  config.get("m") * config["beta1"]  + (1.0 - config["beta1"]) * dw
+    config["v"] = config.get("v") * config["beta2"] + (1.0 - config["beta2"]) * dw**2
+    m = config["m"]/(1.0 - config["beta1"]** config["t"])
+    v = config["v"]/(1.0 - config["beta2"]** config["t"])
+    next_w = w - config["learning_rate"]*m / (np.sqrt(v) + config["epsilon"])
 
     ###########################################################################
     #                             END OF YOUR CODE                            #
