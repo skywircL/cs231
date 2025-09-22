@@ -138,7 +138,11 @@ class CaptioningRNN:
         #                                                                          #
         # You also don't have to implement the backward pass.                      #
         ############################################################################
-        # 
+        h0  = features @ W_proj + b_proj
+        embeddings = W_embed[captions_in]
+        cache = rnn_forward(embeddings,h0,Wx,Wh,b)
+        scores =  cache @W_vocab + b_vocab
+        loss = temporal_softmax_loss(scores, captions_out,mask)
         ############################################################################
         #                             END OF YOUR CODE                             #
         ############################################################################
